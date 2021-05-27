@@ -2,12 +2,14 @@ import { LocationMarkerIcon, SearchIcon } from "@heroicons/react/solid";
 
 function SearchBar() {
     return (
-        <div className="shadow-all px-4 py-3 flex space-x-3 w-full max-w-md rounded-lg items-center sm:max-w-xl lg:max-w-2xl">
-            <LocationMarkerIcon className="h-5" />
+        <form className="card-small flex space-x-3 w-full items-center max-w-lg mb-2 focus-within:border-2 focus-within:border-blue-300">
+            <LocationMarkerIcon className="h-6" />
             {/* below insted of input the location data will be used */}
-            <div className="flex-grow">input</div>
-            <SearchIcon className="h-5" />
-        </div>
+            <div className="flex-grow">
+                <input type="text" className="focus:outline-none w-full" />
+            </div>
+            <SearchIcon className="h-6" />
+        </form>
     );
 }
 

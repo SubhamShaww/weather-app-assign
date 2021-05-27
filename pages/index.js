@@ -5,7 +5,7 @@ import WeekCond from "../components/WeekCond";
 
 export default function Home() {
     return (
-        <div className="flex h-screen flex-col p-5 items-center space-y-2 bg-gray-100">
+        <div className="flex flex-col h-screen space-y-2 p-5 items-start bg-gray-50 overflow-x-hidden">
             <Head>
                 <title>Create Next App</title>
                 <meta

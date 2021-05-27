@@ -2,8 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    h1 {
+        @apply font-semibold text-5xl sm:text-6xl lg:text-7xl;
+    }
+}
+
 @layer components {
-    .shadow-all {
-        box-shadow: 0 0 7px 3px lightgray;
+    .card-small {
+        box-shadow: 1px 1px 7px 3px lightgray;
+        @apply rounded-lg px-4 py-3 bg-white;
+    }
+
+    .card-big {
+        box-shadow: 1px 1px 7px 3px lightgray;
+        @apply rounded-lg px-8 py-6 bg-white;
+    }
+
+    .box {
+        @apply bg-blue-50 text-left px-3 py-2 w-1/2;
+    }
+}
+
+@layer utilities {
+    .hide-scroll::-webkit-scrollbar {
+        /* for chrome, safari and Opera */
+        display: none;
+    }
+
+    .hide-scroll {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
     }
 }
