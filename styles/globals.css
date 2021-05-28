@@ -2,13 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-    h1 {
+@layer components {
+    .text-heading {
         @apply font-semibold text-5xl sm:text-6xl lg:text-7xl;
     }
-}
 
-@layer components {
+    .image-heading {
+        @apply h-14 sm:h-16 lg:h-20;
+    }
+
     .card-small {
         box-shadow: 1px 1px 7px 3px lightgray;
         @apply rounded-lg px-4 py-3 bg-white;
