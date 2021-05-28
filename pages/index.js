@@ -12,31 +12,49 @@ export default function Home() {
     const useMockData = true;
 
     useEffect(() => {
+        let isMounted = true;
+        console.log("mounting >>");
+
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+
         if (useMockData) {
             setIsLoaded(true);
             setWeatherData(mockWeatherData);
         } else {
             fetch(
-                `http://api.openweathermap.org/data/2.5/forecast?id=524901&appid=${process.env.NEXT_PUBLIC_APIKEY}`
+                `http://api.openweathermap.org/data/2.5/forecast?q=mumbai&appid=${process.env.NEXT_PUBLIC_APIKEY}`,
+                {
+                    signal: signal,
+                }
             )
-                .then((res) => res.json())
+                .then((result) => result.json())
                 .then(
                     (result) => {
-                        setIsLoaded(true);
-                        setWeatherData(result);
+                        console.log("isMounted in success part >>>", isMounted);
+                        isMounted &&
+                            setIsLoaded(true) &&
+                            setWeatherData(result);
+                        console.log("result >>> ", result);
+                        console.log("weatherData >>> ", weatherData);
                     },
                     // Note: it's important to handle errors here
                     // instead of a catch() block so that we don't swallow
                     // exceptions from actual bugs in components.
                     (error) => {
-                        setIsLoaded(true);
-                        setError(error);
+                        console.log("isMounted in error part >>>", isMounted);
+                        isMounted && setIsLoaded(true) && setError(error);
                     }
                 );
         }
+
+        return function cleanup() {
+            console.log("unmounting >>");
+            isMounted = false;
+            abortController.abort();
+        };
     }, []);
 
-    console.log(weatherData);
     if (error) {
         return (
             <div className="p-5 bg-gray-50">
@@ -80,16 +98,16 @@ export default function Home() {
                 </Head>
 
                 {/* SearchBar */}
-                <SearchBar />
+                <SearchBar cityData={weatherData?.city} />
 
                 {/* WeekCond */}
-                <WeekCond threeHoursData={weatherData.list} />
+                <WeekCond threeHoursData={weatherData?.list} />
 
                 {/* TodayCond */}
                 <TodayCond
-                    todayData={weatherData.list[0]}
-                    cityData={weatherData.city}
-                    threeHoursData={weatherData.list}
+                    todayData={weatherData?.list[0]}
+                    cityData={weatherData?.city}
+                    threeHoursData={weatherData?.list}
                 />
             </div>
         );

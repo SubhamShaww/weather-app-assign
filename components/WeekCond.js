@@ -38,7 +38,7 @@ function WeekCond({ threeHoursData }) {
                                 </div>
                                 <img
                                     src={`http://openweathermap.org/img/w/${eachDay.weather[0].icon}.png`}
-                                    className="h-8 sm:h-10 lg:h-12"
+                                    className="h-8 sm:h-10"
                                 />
                                 <p className="text-gray-500 text-xs sm:text-sm lg:text-base">
                                     {eachDay.weather[0].main}
