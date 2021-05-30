@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Line } from "react-chartjs-2";
+import { useStateValue } from "../contextAPI/StateProvider";
 
-function TempChart({ threeHoursData }) {
+function TempChart() {
+    const [{ list }, dispatch] = useStateValue();
     const [tempChartData, setTempChartData] = useState({
         labels: [],
         datasets: [
@@ -58,7 +60,7 @@ function TempChart({ threeHoursData }) {
     const getTempChartData = (canvas) => {
         const data = tempChartData;
 
-        threeHoursData.map((eachThreeHour, index) => {
+        list.map((eachThreeHour, index) => {
             index > 0 &&
                 index < 9 &&
                 data.labels.push(

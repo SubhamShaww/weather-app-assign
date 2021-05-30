@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Line } from "react-chartjs-2";
+import { useStateValue } from "../contextAPI/StateProvider";
 
-function SunChart({ cityData }) {
+function SunChart() {
+    const [{ city }, dispatch] = useStateValue();
     const [sunChartData, setSunChartData] = useState({
         labels: [],
         datasets: [],
@@ -84,14 +86,14 @@ function SunChart({ cityData }) {
                 <div className="flex-grow">
                     <p className="font-semibold">Sunrise</p>
                     <p className="text-gray-500">
-                        {getTimeFromUnixTimestamp(cityData.sunrise)}
+                        {getTimeFromUnixTimestamp(city.sunrise)}
                     </p>
                 </div>
 
                 <div>
                     <p className="font-semibold">Sunset</p>
                     <p className="text-gray-500">
-                        {getTimeFromUnixTimestamp(cityData.sunset)}
+                        {getTimeFromUnixTimestamp(city.sunset)}
                     </p>
                 </div>
             </div>

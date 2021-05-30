@@ -1,4 +1,8 @@
-function WeekCond({ threeHoursData }) {
+import { useStateValue } from "../contextAPI/StateProvider";
+
+function WeekCond() {
+    const [locationData, dispatch] = useStateValue();
+
     const getDayFromUnixTimestamp = (unixTimestamp) => {
         const date = new Date(unixTimestamp * 1000);
         const day = date.getDay();
@@ -10,7 +14,7 @@ function WeekCond({ threeHoursData }) {
     return (
         <div className="w-full">
             <div className="px-4 py-3 flex space-x-1 text-sm sm:text-base lg:text-lg overflow-x-auto hide-scroll">
-                {threeHoursData?.map((eachDay, i) => {
+                {locationData.list.map((eachDay, i) => {
                     return (
                         i % 8 == 0 && (
                             <div

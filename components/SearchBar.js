@@ -1,15 +1,17 @@
 import { LocationMarkerIcon, SearchIcon } from "@heroicons/react/solid";
 import { useState } from "react";
-import indiaData from "../india";
+import { actionTypes } from "../contextAPI/reducer";
+import { useStateValue } from "../contextAPI/StateProvider";
+import indiaLocations from "../india";
 
-function SearchBar({ cityData }) {
-    const [userInput, setUserInput] = useState(cityData.name);
-    const locations = indiaData;
+function SearchBar() {
     const [matchedLocations, setMatchedLocations] = useState([]);
     const [isLocationChanged, setIsLocationChanged] = useState(false);
+    const [locationData, dispatch] = useStateValue();
+    const [userInput, setUserInput] = useState(locationData.city?.name || "");
 
     const searchLocation = (searchedText) => {
-        let matches = locations.filter((location) => {
+        let matches = indiaLocations.filter((location) => {
             const regex = new RegExp(`${searchedText}`, "gi");
             return (
                 location.city.match(regex) || location.admin_name.match(regex)
@@ -21,6 +23,10 @@ function SearchBar({ cityData }) {
     const changeLocation = (cityName, stateName) => {
         setIsLocationChanged(true);
         setUserInput(`${cityName}, ${stateName}`);
+        dispatch({
+            type: actionTypes.SET_CITYNAME,
+            cityName: cityName,
+        });
     };
 
     return (
@@ -46,7 +52,7 @@ function SearchBar({ cityData }) {
             {/* Suggestion Box */}
             {!isLocationChanged &&
                 userInput &&
-                userInput !== cityData.name &&
+                userInput !== locationData.city.name &&
                 matchedLocations.length !== 0 && (
                     <div className="card-suggest w-full flex flex-col absolute">
                         {matchedLocations?.map((location, index) => (

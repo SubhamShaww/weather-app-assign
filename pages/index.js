@@ -5,13 +5,14 @@ import SearchBar from "../components/SearchBar";
 import Skeleton from "../components/skeletons/Skeleton";
 import TodayCond from "../components/TodayCond";
 import WeekCond from "../components/WeekCond";
-import mockWeatherData from "../mockWeatherData";
+import { actionTypes } from "../contextAPI/reducer";
+import { useStateValue } from "../contextAPI/StateProvider";
 
 export default function Home() {
     const [error, setError] = useState(null);
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [weatherData, setWeatherData] = useState(mockWeatherData);
     const [isAppLoaded, setIsAppLoaded] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [{}, dispatch] = useStateValue();
     let count = 0;
 
     useEffect(() => {
@@ -33,8 +34,11 @@ export default function Home() {
                         console.log("fetching");
 
                         if (isMounted) {
+                            dispatch({
+                                type: actionTypes.SET_LOCATION,
+                                locationData: result,
+                            });
                             setIsLoaded(true);
-                            setWeatherData(result);
                         }
                     },
                     // Note: it's important to handle errors here
@@ -81,11 +85,7 @@ export default function Home() {
                     />
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
-                {!isAppLoaded ? (
-                    <Skeleton />
-                ) : (
-                    <Loader cityName={weatherData?.city} />
-                )}
+                {!isAppLoaded ? <Skeleton /> : <Loader />}
             </div>
         );
     } else {
@@ -104,18 +104,14 @@ export default function Home() {
                 </Head>
 
                 {/* SearchBar */}
-                <SearchBar cityData={weatherData?.city} />
+                <SearchBar />
 
                 <div className="flex flex-col space-y-2 w-full items-start flex-grow">
                     {/* WeekCond */}
-                    <WeekCond threeHoursData={weatherData?.list} />
+                    <WeekCond />
 
                     {/* TodayCond */}
-                    <TodayCond
-                        todayData={weatherData?.list[0]}
-                        cityData={weatherData?.city}
-                        threeHoursData={weatherData?.list}
-                    />
+                    <TodayCond />
                 </div>
             </div>
         );

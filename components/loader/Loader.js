@@ -1,10 +1,10 @@
 import SearchBar from "../SearchBar";
 
-function Loader({ cityName }) {
+function Loader() {
     return (
         <div className="flex flex-col items-start space-y-14">
             <div className="w-full">
-                <SearchBar cityData={cityName} />
+                <SearchBar />
             </div>
 
             <div className="flex flex-col space-y-2 w-full items-start flex-grow">
