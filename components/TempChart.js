@@ -85,8 +85,8 @@ function TempChart({ threeHoursData }) {
     };
 
     return (
-        <div className=" overflow-x-auto hide-scroll">
-            <div className="w-screen">
+        <div className=" overflow-x-auto hide-scroll flex-grow">
+            <div className="w-screen h-full">
                 <Line data={getTempChartData} options={options} />
             </div>
         </div>

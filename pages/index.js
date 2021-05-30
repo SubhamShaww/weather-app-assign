@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
+import Skeleton from "../components/skeletons/Skeleton";
 import TodayCond from "../components/TodayCond";
 import WeekCond from "../components/WeekCond";
 import mockWeatherData from "../mockWeatherData";
@@ -8,20 +9,15 @@ import mockWeatherData from "../mockWeatherData";
 export default function Home() {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [weatherData, setWeatherData] = useState({});
-    const useMockData = true;
+    const [weatherData, setWeatherData] = useState(mockWeatherData);
 
     useEffect(() => {
         let isMounted = true;
-        console.log("mounting >>");
 
         const abortController = new AbortController();
         const signal = abortController.signal;
 
-        if (useMockData) {
-            setIsLoaded(true);
-            setWeatherData(mockWeatherData);
-        } else {
+        setTimeout(() => {
             fetch(
                 `http://api.openweathermap.org/data/2.5/forecast?q=mumbai&appid=${process.env.NEXT_PUBLIC_APIKEY}`,
                 {
@@ -31,25 +27,23 @@ export default function Home() {
                 .then((result) => result.json())
                 .then(
                     (result) => {
-                        console.log("isMounted in success part >>>", isMounted);
+                        console.log("fetching");
                         isMounted &&
-                            setIsLoaded(true) &&
+                            setIsLoaded((prev) => !prev) &&
                             setWeatherData(result);
-                        console.log("result >>> ", result);
-                        console.log("weatherData >>> ", weatherData);
                     },
                     // Note: it's important to handle errors here
                     // instead of a catch() block so that we don't swallow
                     // exceptions from actual bugs in components.
                     (error) => {
-                        console.log("isMounted in error part >>>", isMounted);
-                        isMounted && setIsLoaded(true) && setError(error);
+                        isMounted &&
+                            setIsLoaded((prev) => !prev) &&
+                            setError(error);
                     }
                 );
-        }
+        }, 4000);
 
         return function cleanup() {
-            console.log("unmounting >>");
             isMounted = false;
             abortController.abort();
         };
@@ -57,7 +51,7 @@ export default function Home() {
 
     if (error) {
         return (
-            <div className="p-5 bg-gray-50">
+            <div className="p-5 bg-gray-50 h-screen">
                 <Head>
                     <title>Weather App</title>
                     <meta
@@ -72,7 +66,7 @@ export default function Home() {
         );
     } else if (!isLoaded) {
         return (
-            <div className="p-5 bg-gray-50">
+            <div className="p-5 bg-gray-50 h-screen">
                 <Head>
                     <title>Weather App</title>
                     <meta
@@ -82,12 +76,12 @@ export default function Home() {
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
 
-                <div>Loading...</div>
+                <Skeleton />
             </div>
         );
     } else {
         return (
-            <div className="flex flex-col h-screen space-y-2 p-5 items-start bg-gray-50 overflow-x-hidden">
+            <div className="flex flex-col space-y-14 h-screen p-5 bg-gray-50 overflow-x-hidden">
                 <Head>
                     <title>Weather App</title>
                     <meta
@@ -100,15 +94,17 @@ export default function Home() {
                 {/* SearchBar */}
                 <SearchBar cityData={weatherData?.city} />
 
-                {/* WeekCond */}
-                <WeekCond threeHoursData={weatherData?.list} />
+                <div className="flex flex-col space-y-2 w-full items-start flex-grow">
+                    {/* WeekCond */}
+                    <WeekCond threeHoursData={weatherData?.list} />
 
-                {/* TodayCond */}
-                <TodayCond
-                    todayData={weatherData?.list[0]}
-                    cityData={weatherData?.city}
-                    threeHoursData={weatherData?.list}
-                />
+                    {/* TodayCond */}
+                    <TodayCond
+                        todayData={weatherData?.list[0]}
+                        cityData={weatherData?.city}
+                        threeHoursData={weatherData?.list}
+                    />
+                </div>
             </div>
         );
     }

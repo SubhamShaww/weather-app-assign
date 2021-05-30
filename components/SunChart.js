@@ -18,7 +18,9 @@ function SunChart({ cityData }) {
             : time.slice(0, 5) + "am";
     };
 
-    const setGradientColor = (canvas, color) => {};
+    const setGradientColor = (canvas, color) => {
+        const ctx = canvas.getContext("2d");
+    };
 
     const getSunChartData = (canvas) => {
         const data = sunChartData;
@@ -95,7 +97,7 @@ function SunChart({ cityData }) {
             </div>
 
             {/* sunrise and sunset graph */}
-            <div className="w-full">
+            <div className="w-full h-full">
                 <Line data={getSunChartData} options={options} />
             </div>
         </div>
