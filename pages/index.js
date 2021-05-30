@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
+import Loader from "../components/loader/Loader";
 import SearchBar from "../components/SearchBar";
 import Skeleton from "../components/skeletons/Skeleton";
 import TodayCond from "../components/TodayCond";
@@ -10,6 +11,8 @@ export default function Home() {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [weatherData, setWeatherData] = useState(mockWeatherData);
+    const [isAppLoaded, setIsAppLoaded] = useState(false);
+    let count = 0;
 
     useEffect(() => {
         let isMounted = true;
@@ -19,7 +22,7 @@ export default function Home() {
 
         setTimeout(() => {
             fetch(
-                `http://api.openweathermap.org/data/2.5/forecast?q=mumbai&appid=${process.env.NEXT_PUBLIC_APIKEY}`,
+                `http://api.openweathermap.org/data/2.5/forecast?q=kolkata&appid=${process.env.NEXT_PUBLIC_APIKEY}`,
                 {
                     signal: signal,
                 }
@@ -28,17 +31,20 @@ export default function Home() {
                 .then(
                     (result) => {
                         console.log("fetching");
-                        isMounted &&
-                            setIsLoaded((prev) => !prev) &&
+
+                        if (isMounted) {
+                            setIsLoaded(true);
                             setWeatherData(result);
+                        }
                     },
                     // Note: it's important to handle errors here
                     // instead of a catch() block so that we don't swallow
                     // exceptions from actual bugs in components.
                     (error) => {
-                        isMounted &&
-                            setIsLoaded((prev) => !prev) &&
+                        if (isMounted) {
+                            setIsLoaded(true);
                             setError(error);
+                        }
                     }
                 );
         }, 4000);
@@ -75,11 +81,17 @@ export default function Home() {
                     />
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
-
-                <Skeleton />
+                {!isAppLoaded ? (
+                    <Skeleton />
+                ) : (
+                    <Loader cityName={weatherData?.city} />
+                )}
             </div>
         );
     } else {
+        ++count;
+        !isAppLoaded && count === 1 && setIsAppLoaded(true);
+
         return (
             <div className="flex flex-col space-y-14 h-screen p-5 bg-gray-50 overflow-x-hidden">
                 <Head>
