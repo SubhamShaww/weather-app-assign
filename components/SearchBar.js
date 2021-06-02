@@ -1,10 +1,11 @@
 import { LocationMarkerIcon, SearchIcon } from "@heroicons/react/solid";
 import { useState } from "react";
-import { actionTypes } from "../contextAPI/reducer";
 import { useStateValue } from "../contextAPI/StateProvider";
 import indiaLocations from "../india";
+import { useRouter } from "next/router";
 
 function SearchBar() {
+    const router = useRouter();
     const [matchedLocations, setMatchedLocations] = useState([]);
     const [isLocationChanged, setIsLocationChanged] = useState(false);
     const [locationData, dispatch] = useStateValue();
@@ -23,10 +24,7 @@ function SearchBar() {
     const changeLocation = (cityName, stateName) => {
         setIsLocationChanged(true);
         setUserInput(`${cityName}, ${stateName}`);
-        dispatch({
-            type: actionTypes.SET_CITYNAME,
-            cityName: cityName,
-        });
+        router.push(`/?term=${cityName}`);
     };
 
     return (
