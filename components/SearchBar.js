@@ -21,10 +21,11 @@ function SearchBar() {
         setMatchedLocations(matches);
     };
 
-    const changeLocation = (cityName, stateName) => {
+    const changeLocation = (cityName, stateName, latitude, longitude) => {
+        console.log("latitude", latitude, " longitude", longitude);
         setIsLocationChanged(true);
         setUserInput(`${cityName}, ${stateName}`);
-        router.push(`/?term=${cityName}`);
+        router.push(`/?lat=${latitude}&long=${longitude}`);
     };
 
     return (
@@ -60,8 +61,14 @@ function SearchBar() {
                                 onClick={(e) => {
                                     changeLocation(
                                         location.city,
-                                        location.admin_name
+                                        location.admin_name,
+                                        location.lat,
+                                        location.lng
                                     );
+                                }}
+                                tabIndex="0"
+                                onKeyDown={(e) => {
+                                    console.log(e, " key is pressed.");
                                 }}
                             >
                                 <span>

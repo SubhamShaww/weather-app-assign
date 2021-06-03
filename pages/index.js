@@ -8,6 +8,7 @@ import WeekCond from "../components/WeekCond";
 import { actionTypes } from "../contextAPI/reducer";
 import { useStateValue } from "../contextAPI/StateProvider";
 import { useRouter } from "next/router";
+import mockWeatherData from "../mockWeatherData";
 
 export default function Home() {
     const router = useRouter();
@@ -15,6 +16,7 @@ export default function Home() {
     const [isLoaded, setIsLoaded] = useState(false);
     const [locationData, dispatch] = useStateValue();
     const [isLocationPermitted, setIsLocationPermitted] = useState(false);
+    const useMockWeatherData = false;
 
     useEffect(() => {
         console.log("mounted");
@@ -35,8 +37,9 @@ export default function Home() {
                 crd.latitude,
                 crd.longitude
             );
-            router.push(`/?lat=${crd.latitude}&long=${crd.longitude}`);
-            setIsLocationPermitted(true);
+            !isLocationPermitted &&
+                router.push(`/?lat=${crd.latitude}&long=${crd.longitude}`);
+            isMounted && !isLocationPermitted && setIsLocationPermitted(true);
         }
         function errors(err) {
             alert(
@@ -80,18 +83,19 @@ export default function Home() {
                 fetchLocation();
 
                 let result =
+                    !useMockWeatherData &&
                     isLocationPermitted &&
                     (await fetch(
-                        router.query.term
-                            ? `http://api.openweathermap.org/data/2.5/forecast?q=${router.query.term}&appid=${process.env.NEXT_PUBLIC_APIKEY}`
-                            : `http://api.openweathermap.org/data/2.5/forecast?lat=${router.query.lat}&lon=${router.query.long}&appid=${process.env.NEXT_PUBLIC_APIKEY}`,
+                        `http://api.openweathermap.org/data/2.5/forecast?lat=${router.query.lat}&lon=${router.query.long}&appid=${process.env.NEXT_PUBLIC_APIKEY}`,
                         {
                             signal: signal,
                         }
                     ));
                 console.log("result >>>", result);
 
-                let weatherData = result && (await result.json());
+                let weatherData = useMockWeatherData
+                    ? mockWeatherData
+                    : result && (await result.json());
                 console.log("weatherData >>>", weatherData);
 
                 if (weatherData && isMounted) {
@@ -113,7 +117,7 @@ export default function Home() {
             isMounted = false;
             abortController.abort();
         };
-    }, [router.query]);
+    }, [router.query.lat]);
 
     if (!isLoaded) {
         return (
