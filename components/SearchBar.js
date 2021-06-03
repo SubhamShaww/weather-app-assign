@@ -7,9 +7,9 @@ import { useRouter } from "next/router";
 function SearchBar() {
     const router = useRouter();
     const [matchedLocations, setMatchedLocations] = useState([]);
-    const [isLocationChanged, setIsLocationChanged] = useState(false);
     const [locationData, dispatch] = useStateValue();
     const [userInput, setUserInput] = useState(locationData.city?.name || "");
+    const [isOpen, setIsOpen] = useState(false);
 
     const searchLocation = (searchedText) => {
         let matches = indiaLocations.filter((location) => {
@@ -22,23 +22,28 @@ function SearchBar() {
     };
 
     const changeLocation = (cityName, stateName, latitude, longitude) => {
-        console.log("latitude", latitude, " longitude", longitude);
-        setIsLocationChanged(true);
         setUserInput(`${cityName}, ${stateName}`);
         router.push(`/?lat=${latitude}&long=${longitude}`);
     };
 
     return (
-        <div className="w-full max-w-lg space-y-[3.25rem] flex flex-col relative">
+        <div
+            className="w-full max-w-lg space-y-[3.25rem] flex flex-col relative"
+            onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                    setIsOpen(false);
+                }
+            }}
+        >
             {/* Search Box */}
             <div className="w-full absolute card-small flex space-x-3 items-center focus-within:border-2 focus-within:border-blue-300">
                 <LocationMarkerIcon className="h-6" />
-                {/* below insted of input the location data will be used */}
                 <div className="flex-grow">
                     <input
                         type="text"
                         value={userInput}
                         onChange={(e) => {
+                            setIsOpen(true);
                             setUserInput(e.target.value);
                             searchLocation(userInput);
                         }}
@@ -49,7 +54,7 @@ function SearchBar() {
             </div>
 
             {/* Suggestion Box */}
-            {!isLocationChanged &&
+            {isOpen &&
                 userInput &&
                 userInput !== locationData.city.name &&
                 matchedLocations.length !== 0 && (

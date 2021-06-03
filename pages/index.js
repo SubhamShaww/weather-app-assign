@@ -16,7 +16,7 @@ export default function Home() {
     const [isLoaded, setIsLoaded] = useState(false);
     const [locationData, dispatch] = useStateValue();
     const [isLocationPermitted, setIsLocationPermitted] = useState(false);
-    const useMockWeatherData = false;
+    const useMockWeatherData = true;
 
     useEffect(() => {
         console.log("mounted");
