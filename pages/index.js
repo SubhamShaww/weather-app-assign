@@ -12,14 +12,14 @@ import mockWeatherData from "../mockWeatherData";
 
 export default function Home() {
     const router = useRouter();
-    const [isAppLoaded, setIsAppLoaded] = useState(false);
+    // const [isAppLoaded, setIsAppLoaded] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
     const [locationData, dispatch] = useStateValue();
     const [isLocationPermitted, setIsLocationPermitted] = useState(false);
-    const useMockWeatherData = true;
+    const useMockWeatherData = false;
 
     useEffect(() => {
-        console.log("mounted");
+        // console.log("mounted");
         let isMounted = true;
 
         const abortController = new AbortController();
@@ -32,11 +32,11 @@ export default function Home() {
         };
         function success(pos) {
             let crd = pos.coords;
-            console.log(
-                "in success prop, latitude and longitude >>>",
-                crd.latitude,
-                crd.longitude
-            );
+            // console.log(
+            //     "in success prop, latitude and longitude >>>",
+            //     crd.latitude,
+            //     crd.longitude
+            // );
             !isLocationPermitted &&
                 router.push(`/?lat=${crd.latitude}&long=${crd.longitude}`);
             isMounted && !isLocationPermitted && setIsLocationPermitted(true);
@@ -56,7 +56,7 @@ export default function Home() {
                 });
 
                 if (result.state === "granted") {
-                    console.log(result.state);
+                    // console.log(result.state);
                     //If granted then you can directly call your function here
                     navigator.geolocation.getCurrentPosition(success);
                 } else if (result.state === "prompt") {
@@ -91,12 +91,12 @@ export default function Home() {
                             signal: signal,
                         }
                     ));
-                console.log("result >>>", result);
+                // console.log("result >>>", result);
 
                 let weatherData = useMockWeatherData
                     ? mockWeatherData
                     : result && (await result.json());
-                console.log("weatherData >>>", weatherData);
+                // console.log("weatherData >>>", weatherData);
 
                 if (weatherData && isMounted) {
                     dispatch({
@@ -106,14 +106,14 @@ export default function Home() {
                     setIsLoaded(true);
                 }
             } catch (error) {
-                console.log("catch block >>>", error);
+                // console.log("catch block >>>", error);
             }
         };
 
         fetchWeatherData();
 
         return function cleanup() {
-            console.log("cleanup");
+            // console.log("cleanup");
             isMounted = false;
             abortController.abort();
         };
@@ -130,12 +130,10 @@ export default function Home() {
                     />
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
-                {!isAppLoaded ? <Skeleton /> : <Loader />}
+                <Skeleton />
             </div>
         );
     } else {
-        // !isAppLoaded && count === 1 && setIsAppLoaded(true);
-
         return (
             <div className="flex flex-col space-y-14 h-screen p-5 bg-gray-50 overflow-x-hidden">
                 <Head>

@@ -1,5 +1,5 @@
 import { LocationMarkerIcon, SearchIcon } from "@heroicons/react/solid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStateValue } from "../contextAPI/StateProvider";
 import indiaLocations from "../india";
 import { useRouter } from "next/router";
@@ -26,6 +26,25 @@ function SearchBar() {
         router.push(`/?lat=${latitude}&long=${longitude}`);
     };
 
+    const handleMouseEvent = (event) => {
+        if (
+            event.path[0].id !== "search-input" &&
+            event.path[0].id !== "search-suggestion" &&
+            event.path[0].id !== "search-suggestion-text" &&
+            event.path[0].id !== "search-suggestion-state"
+        ) {
+            setIsOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener("mousedown", handleMouseEvent);
+        return () => {
+            // cleanup
+            window.removeEventListener("mousedown", handleMouseEvent);
+        };
+    }, [handleMouseEvent]);
+
     return (
         <div
             className="w-full max-w-lg space-y-[3.25rem] flex flex-col relative"
@@ -48,6 +67,8 @@ function SearchBar() {
                             searchLocation(userInput);
                         }}
                         className="focus:outline-none w-full"
+                        id="search-input"
+                        autoComplete="off"
                     />
                 </div>
                 <SearchIcon className="h-6" />
@@ -62,7 +83,7 @@ function SearchBar() {
                         {matchedLocations?.map((location, index) => (
                             <div
                                 key={index}
-                                className="w-full px-4 py-3 border-b border-gray-300 cursor-pointer first:rounded-t-lg last:rounded-b-lg last:border-none hover:bg-gray-100"
+                                className="w-full px-4 py-3 border-b border-gray-300 cursor-pointer outline-none first:rounded-t-lg last:rounded-b-lg last:border-none hover:bg-gray-100 focus:bg-gray-100"
                                 onClick={(e) => {
                                     changeLocation(
                                         location.city,
@@ -71,14 +92,15 @@ function SearchBar() {
                                         location.lng
                                     );
                                 }}
+                                id="search-suggestion"
                                 tabIndex="0"
-                                onKeyDown={(e) => {
-                                    console.log(e, " key is pressed.");
-                                }}
                             >
-                                <span>
+                                <span id="search-suggestion-text">
                                     {location.city},{" "}
-                                    <span className="text-gray-500">
+                                    <span
+                                        className="text-gray-500"
+                                        id="search-suggestion-state"
+                                    >
                                         {location.admin_name}
                                     </span>
                                 </span>

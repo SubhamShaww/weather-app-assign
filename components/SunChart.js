@@ -99,9 +99,9 @@ function SunChart() {
             </div>
 
             {/* sunrise and sunset graph */}
-            <div className="w-full h-full">
+            {/* <div className="w-full h-full">
                 <Line data={getSunChartData} options={options} />
-            </div>
+            </div> */}
         </div>
     );
 }

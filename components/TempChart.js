@@ -64,7 +64,7 @@ function TempChart() {
             index > 0 &&
                 index < 9 &&
                 data.labels.push(
-                    Math.round(eachThreeHour.main.temp - 273.15)
+                    `${Math.round(eachThreeHour.main.temp - 273.15)}°C`
                 ) &&
                 data.datasets[0].data.push(
                     Math.round(eachThreeHour.main.temp - 273.15)
@@ -74,12 +74,13 @@ function TempChart() {
         if (data.datasets) {
             let colors = ["rgba(96, 165, 250, 0.2)", "rgba(96, 165, 250, 1)"];
             data.datasets.forEach((set, i) => {
-                set.backgroundColor = setGradientColor(canvas, colors[i]);
-                set.borderColor = colors[i + 1];
+                set.backgroundColor = setGradientColor(canvas, colors[0]);
+                set.borderColor = colors[1];
                 set.borderWidth = 2;
                 set.lineTension = 0.3;
                 set.fill = true;
                 set.pointBackgroundColor = "#fff";
+                set.pointHoverRadius = 5;
             });
 
             return data;
