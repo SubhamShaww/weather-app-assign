@@ -86,7 +86,7 @@ export default function Home() {
                     !useMockWeatherData &&
                     isLocationPermitted &&
                     (await fetch(
-                        `http://api.openweathermap.org/data/2.5/forecast?lat=${router.query.lat}&lon=${router.query.long}&appid=${process.env.NEXT_PUBLIC_APIKEY}`,
+                        `https://api.openweathermap.org/data/2.5/forecast?lat=${router.query.lat}&lon=${router.query.long}&appid=${process.env.NEXT_PUBLIC_APIKEY}`,
                         {
                             signal: signal,
                         }
